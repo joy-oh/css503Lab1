@@ -21,6 +21,7 @@ void recursive_creation(int leaves)
        pids.push(getpid());
        // fork a left child
        int pid = fork();
+       //for a right child
 
        // wait for one of the children
         if (pid < 0) {
