@@ -18,18 +18,37 @@ void recursive_creation(int leaves)
    if (leaves > 1)
 
    {
+        int pidL, pidR;
        pids.push(getpid());
        // fork a left child
-       int pid = fork();
-       //for a right child
+       pidL = fork();
 
-       // wait for one of the children
-        if (pid < 0) {
+        if (pidL < 0) {
             fprintf(stderr, "left fork failed");
         }
+        if (pidL > 0) {//parent
+        //fork a right child
+            pidR = fork();
+            if (pidR < 0) {
+                fprintf(stderr, "right fork failed");
+            }
+            pids.push(pidR);
+            // wait for one of the children
+            wait(NULL);
+        }
+        if (pidL == 0) {//left child
+            pids.push(pidL);
+             // wait for the other child
+            wait(NULL);
+        }
+       recursive_creation(leaves - 1);
+       while(pids.size() > 0)
 
-       // wait for the other child
-
+       {  // print out a list of my ascendants
+           cout << pids.front() << " ";
+           pids.pop( );
+       }
+        cout << "about to exit\n";
        exit (0);
 
    }
@@ -44,7 +63,6 @@ void recursive_creation(int leaves)
        }
        cout << getpid() << endl;   // print out myself
        exit(0);
-
    }
 
 }
