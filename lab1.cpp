@@ -15,55 +15,44 @@ void recursive_creation(int leaves)
 
 {
 
-   if (leaves > 1)
+    if (leaves > 1)
 
-   {
-        int pidL, pidR;
-       pids.push(getpid());
+    {
+        int pidL, pidR, counter = 0;
+        pids.push(getpid());
+        cout << "parent pid" << getpid() << endl;
        // fork a left child
-       pidL = fork();
-
-        if (pidL < 0) {
-            fprintf(stderr, "left fork failed");
-        }
+        pidL = fork();//fork returns twice
         if (pidL > 0) {//parent
-        //fork a right child
+            cout << pidL << endl;
+            cout << "wait for left child\n";
+            wait(NULL);
+
+            //fork a right child
             pidR = fork();
-            if (pidR < 0) {
-                fprintf(stderr, "right fork failed");
+
+            if (pidR > 0) {//parent
+                cout << "wait for right child\n";
+                wait(NULL);
             }
-            pids.push(pidR);
-            // wait for one of the children
-            wait(NULL);
         }
-        if (pidL == 0) {//left child
-            pids.push(pidL);
-             // wait for the other child
-            wait(NULL);
-        }
-       recursive_creation(leaves - 1);
-       while(pids.size() > 0)
 
-       {  // print out a list of my ascendants
-           cout << pids.front() << " ";
-           pids.pop( );
-       }
-        cout << "about to exit\n";
-       exit (0);
+        recursive_creation(leaves - 1);
+        exit (0);
 
-   }
-   else
+    }
+    else
 
    { // I'm a leaf process
-       while(pids.size() > 0)
+        while(pids.size() > 0)
 
        {  // print out a list of my ascendants
-           cout << pids.front() << " ";
-           pids.pop( );
-       }
-       cout << getpid() << endl;   // print out myself
-       exit(0);
-   }
+            cout << pids.front() << " ";
+            pids.pop( );
+        }
+        cout << getpid() << endl;   // print out myself
+        exit(0);
+    }
 
 }
 
