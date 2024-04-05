@@ -18,48 +18,41 @@ void recursive_creation(int leaves)
     if (leaves > 1)
 
     {
-        pid_t pidL, pidR, parent;
+        pid_t pidL, pidR;
         pids.push(getpid());
-        parent = getpid();
        // fork a left child
         pidL = fork();
         if (pidL > 0) {//parent
-            // cout << "inside parent process of the left child " << getpid() << '\n';
-            wait(NULL);//waif for left child
+            wait(NULL);//wait for left child
 
             //fork a right child
             pidR = fork();
             if (pidR > 0) {//parent
-                // cout << "inside parent process of the right child " << getpid() << '\n';
-                wait(NULL);
+                wait(NULL);//wait for right child
                 exit(0);
             }
-            else if (pidR < 0) {
+            else if (pidR < 0) {//error
                 fprintf (stderr, "Right Fork Failed");
                 exit (1);
             }
-            // else {//right child
-            //     recursive_creation(leaves/2);
-            // }
         }
-        else if (pidL < 0) {
+        else if (pidL < 0) {//error
             fprintf (stderr, "Left Fork Failed");
             exit (1);
         }
-        // else {//left child
-        //     recursive_creation(leaves/2 + 1);
-        // }
-        if (pidL == 0 && leaves % 2 != 0){
+        //case for left and right child
+        //left child odd leaves case:
+        if (pidL == 0 && leaves % 2 != 0) {
+            //leaves fill up from left side -> more leaves
             recursive_creation(leaves/2 + 1);
         }
-        if (pidR == 0 && leaves % 2 != 0){
+        //right child, odd leaves case
+        if (pidR == 0 && leaves % 2 != 0) {
             recursive_creation(leaves/2);
         }
-        else {
+        else {//even leaves
             recursive_creation(leaves/2);
         }
-
-
         exit (0);
     }
     else
@@ -82,21 +75,21 @@ int main(int argc, char* argv[])
 
 {
 // validate arguments
-   if (argc != 2)
+    if (argc != 2)
 
-   {
-       cerr << "usage: lab1 #leaves" << endl;
-       return -1;
-   }
-   int leaves = atoi(argv[1]);
-   if ( leaves < 1 )
+    {
+        cerr << "usage: lab1 #leaves" << endl;
+        return -1;
+    }
+    int leaves = atoi(argv[1]);
+    if ( leaves < 1 )
 
-   {
-      cerr << "usage: lab1 #leaves" << endl;
-      cerr << "where #leaves >= 1" << endl;
-      return -1;
-   }
-   recursive_creation(leaves);
-   return 0;
+    {
+        cerr << "usage: lab1 #leaves" << endl;
+        cerr << "where #leaves >= 1" << endl;
+        return -1;
+    }
+    recursive_creation(leaves);
+    return 0;
 
 }
