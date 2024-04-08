@@ -11,9 +11,9 @@ queue<int> pids;      // stores a list of processes from the parent to a leaf pr
 
 void recursive_creation(int leaves)
 {
-    pid_t pleft, pright;
     if (leaves > 1)
     {
+        pid_t pleft, pright;
         pids.push(getpid());
         // fork left
         pleft = fork();
